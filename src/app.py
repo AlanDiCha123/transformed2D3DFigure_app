@@ -7,6 +7,8 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
+from mplCanvas import MplCanvas
+from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 from transfor2D import rotar, escalar, transformar
 import sys
 
@@ -179,6 +181,14 @@ class Ui_MainWindow(object):
         self.tabWidget_2.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+        # * Adding custom scripts
+        self.pushButton_vertix.clicked.connect(self.createTextEditOnScrollArea)
+
+        sc = MplCanvas(self)
+        toolbar = NavigationToolbar(sc)
+        self.graphic_output.addWidget(toolbar)
+        self.graphic_output.addWidget(sc)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -212,10 +222,19 @@ class Ui_MainWindow(object):
 
     def checkValueNumVertix(self):
         '''Checa el valor del numero de vertices'''
+        self.spin_n_vertix.value()
         pass
 
     def createTextEditOnScrollArea(self):
-        pass
+        global array_coords_vertix
+        array_coords_vertix = []
+        n_vertix = self.spin_n_vertix.value()
+        print(type(n_vertix))
+        for i in range(n_vertix):
+            array_coords_vertix.append(
+                QtWidgets.QTextEdit(parent=self.scrollArea_vertix))
+            # array_coords_vertix[i]
+            pass
 
 
 if __name__ == "__main__":

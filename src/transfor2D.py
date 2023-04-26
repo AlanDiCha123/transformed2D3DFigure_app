@@ -30,12 +30,13 @@ def escalar(points: list[list[float]], escala: float) -> list[list[float]]:
     return points
 
 
-def transformar(points: list[list[float]], vector: list[float]) -> list[list[float]]:
-    '''Transforma la figura 2D con el vector dado'''
+def trasladar(points: list[list[float]], vector: list[float]) -> list[list[float]]:
+    '''Traslada la figura 2D con el vector dado'''
     for i in range((len(points))):
         points[i][0] += vector[0]
         points[i][1] += vector[1]
-    pass
+
+    return points
 
 
 if __name__ == "__main__":
@@ -47,7 +48,7 @@ if __name__ == "__main__":
     ax.add_patch(poly1)
 
     # * Escala figura 30%
-    puntos = escalar(puntos.copy(), 0.3)
+    puntos = trasladar(puntos.copy(), [-5, -5])
     # print("Rotar")
     # print(puntos)
     poly2 = Polygon(puntos[:-1], fill=False,

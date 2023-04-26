@@ -7,9 +7,9 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
-from mplCanvas import MplCanvas
+from mplCanvas import MplCanvas, MplCanvas3D
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
-from transfor2D import rotar, escalar, transformar
+from transfor2D import rotar, escalar, trasladar
 import sys
 
 
@@ -184,7 +184,8 @@ class Ui_MainWindow(object):
         # * Adding custom scripts
         self.pushButton_vertix.clicked.connect(self.createTextEditOnScrollArea)
 
-        sc = MplCanvas(self)
+        # sc = MplCanvas(self)
+        sc = MplCanvas3D(self)
         toolbar = NavigationToolbar(sc)
         self.graphic_output.addWidget(toolbar)
         self.graphic_output.addWidget(sc)
@@ -209,7 +210,7 @@ class Ui_MainWindow(object):
             "MainWindow", "Introduzca el vector (x, y): Ej. 13, 4"))
         self.pb_transf_2d.setText(_translate("MainWindow", "OK"))
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(
-            self.tab_4), _translate("MainWindow", "TRANSFORMAR"))
+            self.tab_4), _translate("MainWindow", "TRASLADAR"))
         self.label_3.setText(_translate("MainWindow", "%"))
         self.pb_escalar_2d.setText(_translate("MainWindow", "OK"))
         self.label_4.setText(_translate("MainWindow", "Porcentaje"))

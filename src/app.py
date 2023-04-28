@@ -9,10 +9,18 @@
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 from mplCanvas import MplCanvas3D
 from PyQt6 import QtCore, QtGui, QtWidgets
-from intertransfor3D import rotar3D, escalar3D, trasladar3D, rotar2D, escalar2D, trasladar2D
+from transfor3D import rotar3D, escalar3D, trasladar3D
+import numpy as np
 import sys
 
 class Ui_MainWindow(object):
+    '''Interfaz grafica'''
+
+    def __init__(self):
+        self.array = np.zeros((1, 1))
+        self.choice = 0
+        self.vxcoords: list[QtWidgets.QTextEdit] = []
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1057, 700)
@@ -305,9 +313,6 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab_2, "")
         MainWindow.setCentralWidget(self.centralwidget)
 
-        # ! Adding custom script
-        self.choice = 0
-
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
         self.tabWidget_4.setCurrentIndex(0)
@@ -320,6 +325,9 @@ class Ui_MainWindow(object):
         self.pb_tras_3D.setDisabled(True)
         self.btn_p_3D.clicked.connect(self.onClickedButton3D)
         self.pb_rot_3D.clicked.connect(self.onClickBtnRotar3D)
+        self.pb_tras_3D.clicked.connect(self.onClickBtnTrasladar3D)
+        self.pb_esc_3D.clicked.connect(self.onClickBtnEscalar3D)
+        self.btn_vertix_3D.clicked.connect(self.onClickedButton2D)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -349,7 +357,7 @@ class Ui_MainWindow(object):
         self.label_24.setText(_translate("MainWindow", "grados (°)"))
         self.label_25.setText(_translate("MainWindow", "Ingrese el valor a rotar en Z"))
         self.tabWidget_3.setTabText(self.tabWidget_3.indexOf(self.tab_6), _translate("MainWindow", "ROTAR"))
-        self.label_12.setText(_translate("MainWindow", "Introduzca el vector (x, y, z): Ej. 3, 4, 1"))
+        self.label_12.setText(_translate("MainWindow", "Introduzca el vector (x, y, z): Ej. 3 4 1"))
         self.pb_tras_3D.setText(_translate("MainWindow", "OK"))
         self.tabWidget_3.setTabText(self.tabWidget_3.indexOf(self.tab_7), _translate("MainWindow", "TRASLADAR"))
         self.label_13.setText(_translate("MainWindow", "%"))
@@ -367,13 +375,17 @@ class Ui_MainWindow(object):
         self.clearGraphicOutput()
 
         if self.rbtn_p1_3D.isChecked():
-            sc = MplCanvas3D(index=0)
+            self.choice = 0
+            self.array = np.array([[0.92523719, 0.26843252, 0.77794309], [0.73156748, 0.27794309, 0.57476281], [0.62113842, 0.37886158, 0.87886158], [0.72205691, 0.07476281, 0.76843252], [0.57476281, 0.23156748, 0.72205691], [0.77794309, 0.42523719, 0.73156748], [0.87886158, 0.12113842, 0.62113842], [0.76843252, 0.22205691, 0.92523719]])
+            sc = MplCanvas3D(index=self.choice, points=self.array)
         elif self.rbtn_p2_3D.isChecked():
-            sc = MplCanvas3D(index=1)
             self.choice = 1
+            self.array = np.array([[0.23156748, 0.72205691, 0.57476281], [0.26843252, 0.77794309, 0.92523719], [0.12113842, 0.62113842, 0.87886158], [0.22205691, 0.92523719, 0.76843252], [0.27794309, 0.57476281, 0.73156748], [0.37886158, 0.87886158, 0.62113842], [0.07476281, 0.76843252, 0.72205691], [0.42523719, 0.73156748, 0.77794309]])
+            sc = MplCanvas3D(index=self.choice, points=self.array)
         elif self.rbtn_p3_3D.isChecked():
-            sc = MplCanvas3D(index=2)
             self.choice = 2
+            self.array = np.array([[0.73156748, 0.77794309, 0.42523719], [0.62113842, 0.87886158, 0.12113842], [0.77794309, 0.92523719, 0.26843252], [0.57476281, 0.73156748, 0.27794309], [0.87886158, 0.62113842, 0.37886158], [0.72205691, 0.57476281, 0.23156748], [0.76843252, 0.72205691, 0.07476281], [0.92523719, 0.76843252, 0.22205691]])
+            sc = MplCanvas3D(index=self.choice, points=self.array)
         toolbar = NavigationToolbar(sc)
         self.graphic_output.addWidget(toolbar)
         self.graphic_output.addWidget(sc)
@@ -382,12 +394,43 @@ class Ui_MainWindow(object):
         self.pb_rot_3D.setEnabled(True)
         self.pb_esc_3D.setEnabled(True)
         self.pb_tras_3D.setEnabled(True)
+
+    def onClickedButton2D(self):
+        numVertix = self.spin_vertix_2D.value()
+        for i in range(numVertix):
+            self.vxcoords.append(QtWidgets.QTextEdit(parent=self.vl_2D))
+            self.vxcoords[i].setGeometry(QtCore.QRect(12 + (i * 10), 12 + (i * 10), 141, 31))
+            self.vxcoords[i].setObjectName(f"te_{i}_2D")
+            self.vl_2D.addWidget(self.vxcoords[i])
+        
+        print(self.vxcoords[0])
     
     def onClickBtnRotar3D(self):
         x = self.spin_degX_rot_3D.value()
         y = self.spin_degY_rot_3D.value()
         z = self.spin_degZ_rot_3D.value()
-        rotar3D(self.choice, x, y, z)
+        self.array = rotar3D(self.array.copy(), x, y, z)
+        self.clearGraphicOutput()
+        self.addGraphicOutput()
+    
+    def onClickBtnTrasladar3D(self):
+        value = self.te_vec_tras_3D.toPlainText().split()
+        value = [int(num) for num in value]
+        self.array = trasladar3D(self.array.copy(), value)
+        self.clearGraphicOutput()
+        self.addGraphicOutput()
+    
+    def onClickBtnEscalar3D(self):
+        value = float(self.te_per_esc_3D.toPlainText())
+        self.array = escalar3D(self.array.copy(), self.array[0].copy(), value)
+        self.clearGraphicOutput()
+        self.addGraphicOutput()
+    
+    def addGraphicOutput(self):
+        sc = MplCanvas3D(index=self.choice, points=self.array)
+        toolbar = NavigationToolbar(sc)
+        self.graphic_output.addWidget(toolbar)
+        self.graphic_output.addWidget(sc)
 
     def clearGraphicOutput(self):
         while not self.graphic_output.isEmpty():

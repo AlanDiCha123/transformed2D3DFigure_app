@@ -2,3 +2,5 @@ env/
 imgs/
 src/__pycache__
 .vscode/
+src/frontend/__pycache__
+src/backend/__pycache__

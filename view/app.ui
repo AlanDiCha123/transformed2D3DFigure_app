@@ -1117,6 +1117,28 @@
     </widget>
    </widget>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1057</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+    <addaction name="actionAutor"/>
+   </widget>
+   <addaction name="menuAbout"/>
+  </widget>
+  <action name="actionAutor">
+   <property name="text">
+    <string>Autor</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

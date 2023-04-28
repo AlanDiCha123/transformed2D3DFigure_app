@@ -7,9 +7,10 @@
 
 
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
-from mplCanvas import MplCanvas3D
+from mplCanvas import MplCanvas3D, MplCanvas2D
 from PyQt6 import QtCore, QtGui, QtWidgets
 from transfor3D import rotar3D, escalar3D, trasladar3D
+from transfor2D import rotar, escalar, trasladar
 import numpy as np
 import sys
 
@@ -323,10 +324,14 @@ class Ui_MainWindow(object):
         self.pb_rot_3D.setDisabled(True)
         self.pb_esc_3D.setDisabled(True)
         self.pb_tras_3D.setDisabled(True)
+        self.btn_rot_2D.setDisabled(True)
+        self.btn_esc_2D.setDisabled(True)
+        self.btn_tras_2D.setDisabled(True)
         self.btn_p_3D.clicked.connect(self.onClickedButton3D)
         self.pb_rot_3D.clicked.connect(self.onClickBtnRotar3D)
         self.pb_tras_3D.clicked.connect(self.onClickBtnTrasladar3D)
         self.pb_esc_3D.clicked.connect(self.onClickBtnEscalar3D)
+        # ? Change for btn_rot_2D
         self.btn_vertix_3D.clicked.connect(self.onClickedButton2D)
 
     def retranslateUi(self, MainWindow):
@@ -396,14 +401,29 @@ class Ui_MainWindow(object):
         self.pb_tras_3D.setEnabled(True)
 
     def onClickedButton2D(self):
-        numVertix = self.spin_vertix_2D.value()
-        for i in range(numVertix):
-            self.vxcoords.append(QtWidgets.QTextEdit(parent=self.vl_2D))
-            self.vxcoords[i].setGeometry(QtCore.QRect(12 + (i * 10), 12 + (i * 10), 141, 31))
-            self.vxcoords[i].setObjectName(f"te_{i}_2D")
-            self.vl_2D.addWidget(self.vxcoords[i])
-        
-        print(self.vxcoords[0])
+        # TODO: Link all TextEdit
+        pass
+    
+    def onClickBtnRotar2D(self):
+        grados = self.spin_deg_rot_2D.value()
+        coord = self.te_coord_rot_2D.toPlainText().split()
+        coord = [float(num) for num in coord]
+        self.array = rotar(self.array.copy(), coord, grados)
+        self.clearGraphicOutput()
+        self.addGraphicOutput2D()
+
+    def onClickBtnEscal2D(self):
+        percent = float(self.te_per_esc_2D.toPlainText())
+        self.array = escalar(self.array.copy(), percent)
+        self.clearGraphicOutput()
+        self.addGraphicOutput2D()
+
+    def onClickBtnTrasl2D(self):
+        vector = self.te_vec_tras_2D.toPlainText().split()
+        vector = [float(num) for num in vector]
+        self.array = trasladar(self.array.copy(), vector)
+        self.clearGraphicOutput()
+        self.addGraphicOutput2D()
     
     def onClickBtnRotar3D(self):
         x = self.spin_degX_rot_3D.value()
@@ -411,23 +431,29 @@ class Ui_MainWindow(object):
         z = self.spin_degZ_rot_3D.value()
         self.array = rotar3D(self.array.copy(), x, y, z)
         self.clearGraphicOutput()
-        self.addGraphicOutput()
+        self.addGraphicOutput3D()
     
     def onClickBtnTrasladar3D(self):
         value = self.te_vec_tras_3D.toPlainText().split()
         value = [int(num) for num in value]
         self.array = trasladar3D(self.array.copy(), value)
         self.clearGraphicOutput()
-        self.addGraphicOutput()
+        self.addGraphicOutput3D()
     
     def onClickBtnEscalar3D(self):
         value = float(self.te_per_esc_3D.toPlainText())
         self.array = escalar3D(self.array.copy(), self.array[0].copy(), value)
         self.clearGraphicOutput()
-        self.addGraphicOutput()
+        self.addGraphicOutput3D()
     
-    def addGraphicOutput(self):
+    def addGraphicOutput3D(self):
         sc = MplCanvas3D(index=self.choice, points=self.array)
+        toolbar = NavigationToolbar(sc)
+        self.graphic_output.addWidget(toolbar)
+        self.graphic_output.addWidget(sc)
+    
+    def addGraphicOutput2D(self):
+        sc = MplCanvas2D(points=self.array)
         toolbar = NavigationToolbar(sc)
         self.graphic_output.addWidget(toolbar)
         self.graphic_output.addWidget(sc)

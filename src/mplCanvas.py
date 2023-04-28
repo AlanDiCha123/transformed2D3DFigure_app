@@ -5,17 +5,17 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from scipy.spatial import ConvexHull
 import numpy as np
 
-class MplCanvas(FigureCanvasQTAgg):
+class MplCanvas2D(FigureCanvasQTAgg):
 
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
+    def __init__(self, parent=None, width=5, height=4, dpi=100, points=np.zeros((3, 2))):
         fig = Figure(figsize=(width, height), dpi=dpi)
         ax = fig.subplots()
-        poly = Polygon([[20, 20], [60, 20], [40, 60]], fill=None, color="red")
+        poly = Polygon(points, fill=None, color="red")
         ax.set_xlim([0, 80])
         ax.set_ylim([0, 80])
         ax.add_patch(poly)
         # self.axes = fig.add_subplot(111)
-        super(MplCanvas, self).__init__(fig)
+        super(MplCanvas2D, self).__init__(fig)
 
 class MplCanvas3D(FigureCanvasQTAgg):
     def __init__(self, parent=None, width=5, height=4, dpi=100, index=0, points=np.zeros((1,1))):
